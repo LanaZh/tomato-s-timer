@@ -12,7 +12,25 @@ class ViewController: UIViewController {
     let lessonLabel : UILabel = {
         let label = UILabel()
         label.text = "Давай сконцентрируемся"
-        label.font = UIFont.boldSystemFont(ofSize: 25)
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.textColor = .black
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    let timerImage : UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "timer")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    let labelInTimer : UILabel = {
+        let label = UILabel()
+        label.text = "25"
+        label.font = UIFont.boldSystemFont(ofSize: 50)
         label.textColor = .black
         label.numberOfLines = 0
         label.textAlignment = .center
@@ -37,12 +55,33 @@ class ViewController: UIViewController {
         return label
     }()
     
+    var timer = Timer()
+    var durationTime = 1500
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .white
         
         setConstraints()
+        
+        startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc func startButtonTapped() {
+        
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerAction), userInfo: nil, repeats: true)
+        
+    }
+    @objc func timerAction(){
+        
+        durationTime -= 1
+        timerLabel.text = "\(durationTime)"
+        print(durationTime)
+        
+        if durationTime == 0 {
+            timer.invalidate()
+        }
     }
 }
 
@@ -52,9 +91,24 @@ extension ViewController {
         
         view.addSubview(lessonLabel)
         NSLayoutConstraint.activate([
-            lessonLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
+            lessonLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
             lessonLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             lessonLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+        ])
+        
+        view.addSubview(timerImage)
+        NSLayoutConstraint.activate([
+            timerImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            timerImage.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            timerImage.heightAnchor.constraint(equalToConstant: 250),
+            timerImage.widthAnchor.constraint(equalToConstant: 250)
+        
+        ])
+        
+        timerImage.addSubview(labelInTimer)
+        NSLayoutConstraint.activate([
+            labelInTimer.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            labelInTimer.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
         
         view.addSubview(startButton)
